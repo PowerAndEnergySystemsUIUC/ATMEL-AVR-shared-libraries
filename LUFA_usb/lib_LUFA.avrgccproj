@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>5.0</ProjectVersion>
+    <ProjectGuid>{a37c6f9e-758e-4fcd-9781-b585160b6e79}</ProjectGuid>
+    <avrdevice>AT90USB1286</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>StaticLibrary</OutputType>
+    <Language>C</Language>
+    <OutputFile>lib$(MSBuildProjectName).a</OutputFile>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <UseGlobalToolchain>True</UseGlobalToolchain>
+    <ToolchainDirPath>
+    </ToolchainDirPath>
+    <MakeDirPath>
+    </MakeDirPath>
+    <GlobalToolchainPath>C:\Program Files (x86)\Atmel\AVR Studio 5.0\AVR ToolChain\bin</GlobalToolchainPath>
+    <AvrGccProjectExtensions>
+    </AvrGccProjectExtensions>
+    <AssemblyName>lib_LUFA</AssemblyName>
+    <Name>lib_LUFA</Name>
+    <RootNamespace>lib_LUFA</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>None</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+      </AvrGcc>
+    </ToolchainSettings>
+    <MemorySettings>
+    </MemorySettings>
+    <GenerateHexFile>True</GenerateHexFile>
+    <GenerateMapFile>True</GenerateMapFile>
+    <GenerateListFile>True</GenerateListFile>
+    <GenerateEepFile>True</GenerateEepFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>F_CLOCK=16000000</Value>
+            <Value>USB_DEVICE_ONLY</Value>
+            <Value>FIXED_CONTROL_ENDPOINT_SIZE=8</Value>
+            <Value>FIXED_NUM_CONFIGURATIONS=1</Value>
+            <Value>USE_FLASH_DESCRIPTORS</Value>
+            <Value>USE_STATIC_OPTIONS="(USB_DEVICE_OPT_FULLSPEED | USB_OPT_REG_ENABLED | USB_OPT_AUTO_PLL)"</Value>
+            <Value>INTERRUPT_CONTROL_ENDPOINT</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+    <MemorySettings>
+      <MemorySegments>
+        <InitialStack IsEnabled="0">
+          <Address>0xfe00</Address>
+        </InitialStack>
+      </MemorySegments>
+    </MemorySettings>
+    <GenerateHexFile>True</GenerateHexFile>
+    <GenerateMapFile>True</GenerateMapFile>
+    <GenerateListFile>True</GenerateListFile>
+    <GenerateEepFile>True</GenerateEepFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'AT90USB1286' ">
+    <ToolchainSettings>
+      <AvrGcc xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>F_CLOCK=16000000</Value>
+            <Value>USB_DEVICE_ONLY</Value>
+            <Value>FIXED_CONTROL_ENDPOINT_SIZE=8</Value>
+            <Value>FIXED_NUM_CONFIGURATIONS=1</Value>
+            <Value>USE_FLASH_DESCRIPTORS</Value>
+            <Value>USE_STATIC_OPTIONS="(USB_DEVICE_OPT_FULLSPEED | USB_OPT_REG_ENABLED | USB_OPT_AUTO_PLL)"</Value>
+            <Value>INTERRUPT_CONTROL_ENDPOINT</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+    <MemorySettings>
+      <MemorySegments xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+        <InitialStack IsEnabled="0">
+          <Address>0xfe00</Address>
+        </InitialStack>
+      </MemorySegments>
+    </MemorySettings>
+    <GenerateHexFile>True</GenerateHexFile>
+    <GenerateMapFile>True</GenerateMapFile>
+    <GenerateListFile>True</GenerateListFile>
+    <GenerateEepFile>True</GenerateEepFile>
+    <OutputPath>bin\AT90USB1286\</OutputPath>
+    <OutputFile>lib_LUFA_AT90USB1286.a</OutputFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Common\Attributes.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Common\BoardTypes.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Common\Common.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Audio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\CDC.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Common\Audio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Common\CDC.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Common\HID.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Common\MassStorage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Common\MIDI.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Common\Printer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Common\RNDIS.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Common\StillImage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\Audio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\Audio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\CDC.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\CDC.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\HID.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\HID.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\MassStorage.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\MassStorage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\MIDI.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\MIDI.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\RNDIS.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Device\RNDIS.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\HID.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\CDC.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\CDC.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\HID.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\HID.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\HIDParser.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\HIDParser.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\HIDReportData.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\MassStorage.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\MassStorage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\MIDI.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\MIDI.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\Printer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\Printer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\RNDIS.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\RNDIS.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\StillImage.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Host\StillImage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\MassStorage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\MIDI.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\Printer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\RNDIS.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\Class\StillImage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\ConfigDescriptor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\ConfigDescriptor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\DeviceStandardReq.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\DeviceStandardReq.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\EndpointStream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\EndpointStream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\Events.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\Events.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\HostStandardReq.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\HostStandardReq.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\PipeStream.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\PipeStream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\StdDescriptors.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\StdRequestType.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\StreamCallbacks.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="Drivers\USB\HighLevel\Template\Template_Endpoint_Control_R.c">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="Drivers\USB\HighLevel\Template\Template_Endpoint_Control_W.c">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="Drivers\USB\HighLevel\Template\Template_Endpoint_RW.c">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="Drivers\USB\HighLevel\Template\Template_Pipe_RW.c">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="Drivers\USB\HighLevel\USBMode.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\USBTask.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\HighLevel\USBTask.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\Device.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\Device.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\Endpoint.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\Endpoint.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\Host.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\Host.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\OTG.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\Pipe.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\Pipe.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\USBController.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\USBController.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\USBInterrupt.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\LowLevel\USBInterrupt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Drivers\USB\USB.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Version.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="Drivers" />
+    <Folder Include="Drivers\USB" />
+    <Folder Include="Drivers\USB\Class" />
+    <Folder Include="Drivers\USB\Class\Common\" />
+    <Folder Include="Drivers\USB\Class\Device\" />
+    <Folder Include="Drivers\USB\Class\Host\" />
+    <Folder Include="Drivers\USB\HighLevel\" />
+    <Folder Include="Drivers\USB\HighLevel\Template\" />
+    <Folder Include="Drivers\USB\LowLevel\" />
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\AvrGCC.targets" />
+</Project>

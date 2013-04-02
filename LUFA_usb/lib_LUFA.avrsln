@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# AvrStudio Solution File, Format Version 11.00
+Project("{D1100916-62DA-4D80-A9B4-55A1E7CCEEB3}") = "lib_LUFA", "lib_LUFA.avrgccproj", "{A37C6F9E-758E-4FCD-9781-B585160B6E79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		AT90USB1286|AVR = AT90USB1286|AVR
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A37C6F9E-758E-4FCD-9781-B585160B6E79}.AT90USB1286|AVR.ActiveCfg = AT90USB1286|AVR
+		{A37C6F9E-758E-4FCD-9781-B585160B6E79}.AT90USB1286|AVR.Build.0 = AT90USB1286|AVR
+		{A37C6F9E-758E-4FCD-9781-B585160B6E79}.Debug|AVR.ActiveCfg = Debug|AVR
+		{A37C6F9E-758E-4FCD-9781-B585160B6E79}.Debug|AVR.Build.0 = Debug|AVR
+		{A37C6F9E-758E-4FCD-9781-B585160B6E79}.Release|AVR.ActiveCfg = Release|AVR
+		{A37C6F9E-758E-4FCD-9781-B585160B6E79}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
