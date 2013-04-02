@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>5.1</ProjectVersion>
+    <ProjectGuid>{c42945e9-c54f-467f-8648-81eaceede425}</ProjectGuid>
+    <avrdevice>ATmega328P</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>StaticLibrary</OutputType>
+    <Language>C</Language>
+    <OutputFile>lib$(MSBuildProjectName).a</OutputFile>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AvrGccProjectExtensions>
+    </AvrGccProjectExtensions>
+    <AssemblyName>lib_fat32</AssemblyName>
+    <Name>riglar_fat32</Name>
+    <RootNamespace>lib_fat32</RootNamespace>
+    <ToolchainName>com.Atmel.AVRGCC8</ToolchainName>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <avrtool />
+    <AsfVersion>2.9.0</AsfVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>None</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+      </AvrGcc>
+    </ToolchainSettings>
+    <MemorySettings>
+    </MemorySettings>
+    <OutputFileName>liblib_fat32</OutputFileName>
+    <OutputFileExtension>.a</OutputFileExtension>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGcc>
+  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>RIGLAR_FAT32_DEMO</Value>
+    </ListValues>
+  </avrgcc.compiler.symbols.DefSymbols>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
+</AvrGcc>
+    </ToolchainSettings>
+    <MemorySettings>
+    </MemorySettings>
+    <OutputFileName>riglar_fat32_demo</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputType>Executable</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'ATMEGA328P' ">
+    <OutputPath>bin\ATMEGA328P\</OutputPath>
+    <MemorySettings>
+      <MemorySegments xmlns="">
+        <InitialStack IsEnabled="0">
+          <Address>0x800</Address>
+        </InitialStack>
+      </MemorySegments>
+    </MemorySettings>
+    <OutputFileName>libriglar_fat32_ATMEGA328P</OutputFileName>
+    <OutputFileExtension>.a</OutputFileExtension>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="fat_access.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_access.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_cache.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_cache.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_defs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_filelib.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_filelib.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_format.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_format.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_misc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_misc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_opts.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_string.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_string.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_table.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_table.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_write.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fat_write.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="riglar_fat32_demo.c">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\AvrGCC.targets" />
+</Project>

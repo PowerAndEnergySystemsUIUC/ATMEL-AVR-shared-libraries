@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# AvrStudio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "fleury_i2c", "..\lib_i2c\fleury_i2c.cproj", "{BD08B53C-D86A-42E9-8F39-5D9252D79422}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		ATMEGA328P|AVR = ATMEGA328P|AVR
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD08B53C-D86A-42E9-8F39-5D9252D79422}.ATMEGA328P|AVR.ActiveCfg = ATMEGA328P|AVR
+		{BD08B53C-D86A-42E9-8F39-5D9252D79422}.ATMEGA328P|AVR.Build.0 = ATMEGA328P|AVR
+		{BD08B53C-D86A-42E9-8F39-5D9252D79422}.Debug|AVR.ActiveCfg = Debug|AVR
+		{BD08B53C-D86A-42E9-8F39-5D9252D79422}.Debug|AVR.Build.0 = Debug|AVR
+		{BD08B53C-D86A-42E9-8F39-5D9252D79422}.Release|AVR.ActiveCfg = Release|AVR
+		{BD08B53C-D86A-42E9-8F39-5D9252D79422}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
