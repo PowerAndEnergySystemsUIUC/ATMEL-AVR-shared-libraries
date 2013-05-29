@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectVersion>5.1</ProjectVersion>
+    <ProjectVersion>6.1</ProjectVersion>
     <ProjectGuid>{5ea15fb1-68e0-4cfd-b1b0-0a5e381841fc}</ProjectGuid>
     <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
@@ -16,30 +16,54 @@
     <Name>mcclurg_rtc</Name>
     <RootNamespace>lib_rtc</RootNamespace>
     <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
-    <ToolchainName>com.Atmel.AVRGCC8</ToolchainName>
+    <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <AsfVersion>2.9.0</AsfVersion>
+    <AsfFrameworkConfig>
+      <framework-data>
+  <options />
+  <configurations />
+  <files />
+  <documentation help="" />
+  <offline-documentation help="" />
+  <dependencies>
+    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.3.0" />
+  </dependencies>
+</framework-data>
+    </AsfFrameworkConfig>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <ToolchainSettings>
-      <AvrGcc>
-        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
-        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
-        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
-        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>None</avrgcc.compiler.optimization.DebugLevel>
-        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-      </AvrGcc>
-    </ToolchainSettings>
     <MemorySettings>
     </MemorySettings>
     <OutputFileName>liblib_rtc</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
+    <ToolchainSettings>
+      <AvrGcc xmlns="">
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+</AvrGcc>
+    </ToolchainSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <MemorySettings>
+    </MemorySettings>
+    <OutputFileName>mcclurg_rtc_demo</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputType>Executable</OutputType>
     <ToolchainSettings>
-      <AvrGcc>
+      <AvrGcc xmlns="">
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
   <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
   <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
   <avrgcc.compiler.symbols.DefSymbols>
@@ -65,18 +89,27 @@
       <Value>../../fleury_i2c/ATMEGA328P</Value>
     </ListValues>
   </avrgcc.linker.libraries.LibrarySearchPaths>
-  <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
 </AvrGcc>
     </ToolchainSettings>
-    <MemorySettings>
-    </MemorySettings>
-    <OutputFileName>mcclurg_rtc_demo</OutputFileName>
-    <OutputFileExtension>.elf</OutputFileExtension>
-    <OutputType>Executable</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'PCF8583_ATMEGA328P' ">
+    <MemorySettings>
+      <MemorySegments>
+        <InitialStack IsEnabled="0">
+          <Address>0x800</Address>
+        </InitialStack>
+      </MemorySegments>
+    </MemorySettings>
+    <OutputPath>bin\lib_ATMEGA328P\</OutputPath>
+    <OutputFileName>libmcclurg_rtc_PCF8583_ATMEGA328P</OutputFileName>
+    <OutputFileExtension>.a</OutputFileExtension>
     <ToolchainSettings>
-      <AvrGcc>
+      <AvrGcc xmlns="">
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
   <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
   <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
   <avrgcc.compiler.symbols.DefSymbols>
@@ -98,23 +131,27 @@
       <Value>../../lib_i2c/ATMEGA328P</Value>
     </ListValues>
   </avrgcc.linker.libraries.LibrarySearchPaths>
-  <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
 </AvrGcc>
     </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'PCF8563_ATMEGA328P' ">
     <MemorySettings>
-      <MemorySegments>
+      <MemorySegments xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
         <InitialStack IsEnabled="0">
           <Address>0x800</Address>
         </InitialStack>
       </MemorySegments>
     </MemorySettings>
-    <OutputPath>bin\lib_ATMEGA328P\</OutputPath>
-    <OutputFileName>libmcclurg_rtc_PCF8583_ATMEGA328P</OutputFileName>
+    <OutputFileName>libmcclurg_rtc_PCF8563_ATMEGA328P</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'PCF8563_ATMEGA328P' ">
+    <OutputPath>bin\PCF8563_ATMEGA328P\</OutputPath>
     <ToolchainSettings>
-      <AvrGcc>
+      <AvrGcc xmlns="">
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
   <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
   <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
   <avrgcc.compiler.symbols.DefSymbols>
@@ -138,19 +175,9 @@
       <Value>../../lib_i2c/ATMEGA328P</Value>
     </ListValues>
   </avrgcc.linker.libraries.LibrarySearchPaths>
-  <avrgcc.assembler.debugging.DebugLevel>Default (-g2)</avrgcc.assembler.debugging.DebugLevel>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
 </AvrGcc>
     </ToolchainSettings>
-    <MemorySettings>
-      <MemorySegments xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-        <InitialStack IsEnabled="0">
-          <Address>0x800</Address>
-        </InitialStack>
-      </MemorySegments>
-    </MemorySettings>
-    <OutputFileName>libmcclurg_rtc_PCF8563_ATMEGA328P</OutputFileName>
-    <OutputFileExtension>.a</OutputFileExtension>
-    <OutputPath>bin\PCF8563_ATMEGA328P\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="mcclurg_rtc_demo.c">
