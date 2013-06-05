@@ -1,0 +1,1 @@
+The development of this code was funded by the University of Iowa Wireless Sensor Networks Laboratory. It is GPL unless otherwise stated.
