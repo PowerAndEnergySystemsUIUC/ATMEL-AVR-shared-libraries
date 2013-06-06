@@ -28,6 +28,7 @@ AVR_APP_PATH :=$$$AVR_APP_PATH$$$
 QUOTE := "
 ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:=
+LIB_DEP:=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := 
@@ -36,7 +37,8 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../fleury_uart_demo.c \
-../fleury_uart.c
+../fleury_uart.c \
+../uart.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,23 +49,23 @@ ASM_SRCS +=
 
 OBJS +=  \
 fleury_uart_demo.o \
-fleury_uart.o
-
+fleury_uart.o \
+uart.o
 
 OBJS_AS_ARGS +=  \
 fleury_uart_demo.o \
-fleury_uart.o
-
+fleury_uart.o \
+uart.o
 
 C_DEPS +=  \
 fleury_uart_demo.d \
-fleury_uart.d
-
+fleury_uart.d \
+uart.d
 
 C_DEPS_AS_ARGS +=  \
 fleury_uart_demo.d \
-fleury_uart.d
-
+fleury_uart.d \
+uart.d
 
 OUTPUT_FILE_PATH +=libfleury_uart_with_stdio_ATMEGA328P.a
 
@@ -73,7 +75,11 @@ ADDITIONAL_DEPENDENCIES:=
 
 OUTPUT_FILE_DEP:= ./makedep.mk
 
+LIB_DEP+= 
+
 # AVR32/GNU C Compiler
+
+
 
 
 
@@ -81,9 +87,10 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 
 ./%.o: .././%.c
 	@echo Building file: $<
-	@echo Invoking: AVR/GNU C Compiler
-	$(QUOTE)C:\Program Files\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1\AVRToolchain\bin\avr-gcc.exe$(QUOTE)  -funsigned-char -funsigned-bitfields -DUART_CONFIGURE_FOR_STDIO -DUART_AUTOMATIC_CARRIAGE_RETURN  -Os -fpack-struct -fshort-enums -g2 -Wall -Werror -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)"  -mmcu=atmega328p  -o"$@" "$<" 
+	@echo Invoking: AVR/GNU C Compiler : 3.4.2
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.2.939\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -funsigned-char -funsigned-bitfields -DUART_CONFIGURE_FOR_STDIO -DUART_AUTOMATIC_CARRIAGE_RETURN  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -Werror -mmcu=at90pwm316 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
 	@echo Finished building: $<
+	
 
 
 
@@ -110,15 +117,18 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 	@echo Building target: $@
-	@echo Invoking: AVR/GNU C Archiver
-	$(QUOTE)C:\Program Files\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1\AVRToolchain\bin\avr-ar.exe$(QUOTE) -r  -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)
+	@echo Invoking: AVR/GNU Archiver : 3.4.2
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.2.939\avr8-gnu-toolchain\bin\avr-ar.exe$(QUOTE) -r  -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)
 	@echo Finished building target: $@
 	
+	
+
 
 
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS_AS_ARGS)$(C_DEPS_AS_ARGS) $(EXECUTABLES) 
-	rm -rf "libfleury_uart_with_stdio_ATMEGA328P.hex" "libfleury_uart_with_stdio_ATMEGA328P.lss" "libfleury_uart_with_stdio_ATMEGA328P.eep" "libfleury_uart_with_stdio_ATMEGA328P.map"
+	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
+	-$(RM) $(C_DEPS_AS_ARGS)   
+	rm -rf "libfleury_uart_with_stdio_ATMEGA328P.elf" "libfleury_uart_with_stdio_ATMEGA328P.a" "libfleury_uart_with_stdio_ATMEGA328P.hex" "libfleury_uart_with_stdio_ATMEGA328P.lss" "libfleury_uart_with_stdio_ATMEGA328P.eep" "libfleury_uart_with_stdio_ATMEGA328P.map" "libfleury_uart_with_stdio_ATMEGA328P.srec"
 	

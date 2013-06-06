@@ -1,6 +1,188 @@
 #ifndef UART_H
 #define UART_H
 #include <avr/io.h>
+#include <avr/pgmspace.h>
+
+typedef struct{
+	unsigned char* buffer;
+	unsigned char  size;
+	unsigned char  head;
+	unsigned char  tail;
+	unsigned char  mask;
+} RingBuffer;
+
+/*
+ *  constants and macros
+ */
+
+#if defined(__AVR_AT90S2313__) \
+ || defined(__AVR_AT90S4414__) || defined(__AVR_AT90S4434__) \
+ || defined(__AVR_AT90S8515__) || defined(__AVR_AT90S8535__) \
+ || defined(__AVR_ATmega103__)
+ /* old AVR classic or ATmega103 with one UART */
+ #define AT90_UART
+ #define UART0_RECEIVE_INTERRUPT   UART_RX_vect 
+ #define UART0_TRANSMIT_INTERRUPT  UART_UDRE_vect
+ #define UART0_STATUS   USR
+ #define UART0_CONTROL  UCR
+ #define UART0_DATA     UDR  
+ #define UART0_UDRIE    UDRIE
+#elif defined(__AVR_AT90S2333__) || defined(__AVR_AT90S4433__)
+ /* old AVR classic with one UART */
+ #define AT90_UART
+ #define UART0_RECEIVE_INTERRUPT   UART_RX_vect 
+ #define UART0_TRANSMIT_INTERRUPT  UART_UDRE_vect
+ #define UART0_STATUS   UCSRA
+ #define UART0_CONTROL  UCSRB
+ #define UART0_DATA     UDR 
+ #define UART0_UDRIE    UDRIE
+#elif  defined(__AVR_ATmega8__) || defined(__AVR_ATmega16__) || defined(__AVR_ATmega32__) \
+  || defined(__AVR_ATmega323__)
+  /* ATmega with one USART */
+ #define ATMEGA_USART
+ #define UART0_RECEIVE_INTERRUPT   USART_RXC_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
+ #define UART0_STATUS   UCSRA
+ #define UART0_CONTROL  UCSRB
+ #define UART0_DATA     UDR
+ #define UART0_UDRIE    UDRIE
+#elif defined (__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) || defined(__AVR_AT90PWM316__)
+ #define ATMEGA_USART
+ #define UART0_RECEIVE_INTERRUPT   USART_RX_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
+ #define UART0_STATUS   UCSRA
+ #define UART0_CONTROL  UCSRB
+ #define UART0_DATA     UDR
+ #define UART0_UDRIE    UDRIE
+#elif defined(__AVR_ATmega163__)
+  /* ATmega163 with one UART */
+ #define ATMEGA_UART
+ #define UART0_RECEIVE_INTERRUPT   UART_RX_vect
+ #define UART0_TRANSMIT_INTERRUPT  UART_UDRE_vect
+ #define UART0_STATUS   UCSRA
+ #define UART0_CONTROL  UCSRB
+ #define UART0_DATA     UDR
+ #define UART0_UDRIE    UDRIE
+#elif defined(__AVR_ATmega162__) 
+ /* ATmega with two USART */
+ #define ATMEGA_USART0
+ #define ATMEGA_USART1
+ #define UART0_RECEIVE_INTERRUPT   USART0_RXC_vect
+ #define UART1_RECEIVE_INTERRUPT   USART1_RXC_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
+ #define UART1_TRANSMIT_INTERRUPT  USART1_UDRE_vect
+ #define UART0_STATUS   UCSR0A
+ #define UART0_CONTROL  UCSR0B
+ #define UART0_DATA     UDR0
+ #define UART0_UDRIE    UDRIE0
+ #define UART1_STATUS   UCSR1A
+ #define UART1_CONTROL  UCSR1B
+ #define UART1_DATA     UDR1
+ #define UART1_UDRIE    UDRIE1
+#elif defined(__AVR_ATmega64__) || defined(__AVR_ATmega128__) 
+ /* ATmega with two USART */
+ #define ATMEGA_USART0
+ #define ATMEGA_USART1
+ #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
+ #define UART1_RECEIVE_INTERRUPT   USART1_RX_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
+ #define UART1_TRANSMIT_INTERRUPT  USART1_UDRE_vect
+ #define UART0_STATUS   UCSR0A
+ #define UART0_CONTROL  UCSR0B
+ #define UART0_DATA     UDR0
+ #define UART0_UDRIE    UDRIE0
+ #define UART1_STATUS   UCSR1A
+ #define UART1_CONTROL  UCSR1B
+ #define UART1_DATA     UDR1
+ #define UART1_UDRIE    UDRIE1
+#elif defined(__AVR_ATmega161__)
+ /* ATmega with UART */
+ #error "AVR ATmega161 currently not supported by this libaray !"
+#elif defined(__AVR_ATmega169__) 
+ /* ATmega with one USART */
+ #define ATMEGA_USART
+ #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
+ #define UART0_STATUS   UCSRA
+ #define UART0_CONTROL  UCSRB
+ #define UART0_DATA     UDR
+ #define UART0_UDRIE    UDRIE
+#elif defined(__AVR_ATmega48__) || defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega48P__) || defined(__AVR_ATmega88P__) || defined(__AVR_ATmega168P__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__) \
+ || defined(__AVR_ATmega3250__) || defined(__AVR_ATmega3290__) ||defined(__AVR_ATmega6450__) || defined(__AVR_ATmega6490__)
+ /* ATmega with one USART */
+ #define ATMEGA_USART0
+ #define UART0_RECEIVE_INTERRUPT   USART_RX_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
+ #define UART0_STATUS   UCSR0A
+ #define UART0_CONTROL  UCSR0B
+ #define UART0_DATA     UDR0
+ #define UART0_UDRIE    UDRIE0
+#elif defined(__AVR_ATtiny2313__) 
+ #define ATMEGA_USART
+ #define UART0_RECEIVE_INTERRUPT   USART_RX_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
+ #define UART0_STATUS   UCSRA
+ #define UART0_CONTROL  UCSRB
+ #define UART0_DATA     UDR
+ #define UART0_UDRIE    UDRIE
+#elif defined(__AVR_ATmega329__) || \
+      defined(__AVR_ATmega649__) || \
+      defined(__AVR_ATmega325__) || \
+      defined(__AVR_ATmega645__) 
+  /* ATmega with one USART */
+  #define ATMEGA_USART0
+  #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
+  #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
+  #define UART0_STATUS   UCSR0A
+  #define UART0_CONTROL  UCSR0B
+  #define UART0_DATA     UDR0
+  #define UART0_UDRIE    UDRIE0
+#elif defined(__AVR_ATmega2560__) || defined(__AVR_ATmega2561__) || defined(__AVR_ATmega1280__)  || defined(__AVR_ATmega1281__) || defined(__AVR_ATmega640__)
+/* ATmega with two USART */
+  #define ATMEGA_USART0
+  #define ATMEGA_USART1
+  #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
+  #define UART1_RECEIVE_INTERRUPT   USART1_RX_vect
+  #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
+  #define UART1_TRANSMIT_INTERRUPT  USART1_UDRE_vect
+  #define UART0_STATUS   UCSR0A
+  #define UART0_CONTROL  UCSR0B
+  #define UART0_DATA     UDR0
+  #define UART0_UDRIE    UDRIE0
+  #define UART1_STATUS   UCSR1A
+  #define UART1_CONTROL  UCSR1B
+  #define UART1_DATA     UDR1
+  #define UART1_UDRIE    UDRIE1  
+#elif defined(__AVR_ATmega644__)
+ /* ATmega with one USART */
+ #define ATMEGA_USART0
+ #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
+ #define UART0_STATUS   UCSR0A
+ #define UART0_CONTROL  UCSR0B
+ #define UART0_DATA     UDR0
+ #define UART0_UDRIE    UDRIE0
+#elif defined(__AVR_ATmega164P__) || defined(__AVR_ATmega324P__) || defined(__AVR_ATmega644P__)
+ /* ATmega with two USART */
+ #define ATMEGA_USART0
+ #define ATMEGA_USART1
+ #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
+ #define UART1_RECEIVE_INTERRUPT   USART1_RX_vect
+ #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
+ #define UART1_TRANSMIT_INTERRUPT  USART1_UDRE_vect
+ #define UART0_STATUS   UCSR0A
+ #define UART0_CONTROL  UCSR0B
+ #define UART0_DATA     UDR0
+ #define UART0_UDRIE    UDRIE0
+ #define UART1_STATUS   UCSR1A
+ #define UART1_CONTROL  UCSR1B
+ #define UART1_DATA     UDR1
+ #define UART1_UDRIE    UDRIE1
+#else
+ #error "no UART definition for MCU available"
+#endif
+
+#define uart_flush_tx() UART0_CONTROL |= _BV(UART0_UDRIE)
 
 /************************************************************************
 Title:    Interrupt UART library with receive/transmit circular buffers
@@ -72,20 +254,6 @@ LICENSE:
 #define UART_BAUD_SELECT_DOUBLE_SPEED(baudRate,xtalCpu) ( ((((xtalCpu) + 4UL * (baudRate)) / (8UL * (baudRate)) -1UL)) | 0x8000)
 
 
-/** Size of the circular receive buffer, must be power of 2 */
-#ifndef UART_RX_BUFFER_SIZE
-#define UART_RX_BUFFER_SIZE 32
-#endif
-/** Size of the circular transmit buffer, must be power of 2 */
-#ifndef UART_TX_BUFFER_SIZE
-#define UART_TX_BUFFER_SIZE 32
-#endif
-
-/* test if the size of the circular buffers fits into SRAM */
-#if ( (UART_RX_BUFFER_SIZE+UART_TX_BUFFER_SIZE) >= (RAMEND-0x60 ) )
-#error "size of UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE larger than size of SRAM"
-#endif
-
 /* 
 ** high byte error return code of uart_getc()
 */
@@ -105,8 +273,9 @@ LICENSE:
    @param   baudrate Specify baudrate using macro UART_BAUD_SELECT()
    @return  none
 */
-extern void uart_init(unsigned int baudrate);
-
+extern void uart_init(unsigned int baudrate, RingBuffer* rx_buffer, RingBuffer* tx_buffer);
+extern void uart_wait_tx_free(void);
+extern void uart_wait_tx_empty(void);
 
 /**
  *  @brief   Get received byte from ringbuffer
@@ -178,7 +347,7 @@ extern void uart_puts_p(const char *s );
 
 
 /** @brief  Initialize USART1 (only available on selected ATmegas) @see uart_init */
-extern void uart1_init(unsigned int baudrate);
+extern void uart1_init(unsigned int baudrate, RingBuffer* rx_buffer, RingBuffer* tx_buffer);
 /** @brief  Get received byte of USART1 from ringbuffer. (only available on selected ATmega) @see uart_getc */
 extern unsigned int uart1_getc(void);
 /** @brief  Put byte to ringbuffer for transmitting via USART1 (only available on selected ATmega) @see uart_putc */
@@ -191,7 +360,6 @@ extern void uart1_puts_p(const char *s );
 #define uart1_puts_P(__s)       uart1_puts_p(PSTR(__s))
 
 /**@}*/
-
 
 #endif // UART_H 
 

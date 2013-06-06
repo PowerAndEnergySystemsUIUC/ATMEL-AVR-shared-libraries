@@ -14,6 +14,7 @@
 void uart_config_default_stdio(void);
 FILE* uart_get_output_stream();
 FILE* uart_get_input_stream();
+
 #endif
 
 void uart_put_bin8(char data);

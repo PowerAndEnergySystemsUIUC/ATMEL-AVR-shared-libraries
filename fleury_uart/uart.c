@@ -11,9 +11,24 @@ DESCRIPTION:
     receiving a byte. The interrupt handling routines use circular buffers
     for buffering received and transmitted data.
     
-    The UART_RX_BUFFER_SIZE and UART_TX_BUFFER_SIZE variables define
+    The UART_RxBuf->size and UART_TxBuf->size variables define
     the buffer size in bytes. Note that these variables must be a 
     power of 2.
+	
+	Modified June 2013 by Josiah McClurg:
+	   1. Provide externally-allocated transmit and receive structs. For
+	      maximum flexibility, user must externally set all the properties
+		  of each RingBuffer. Typical values are below.
+		     size:   recommended to be power of 2  (length of buffer)
+		     mask:   recommended to be size-1      (mask used to allow buffer
+													to wrap back to beginning: 
+													index = (head + 1) & mask)
+		     buffer: must be unsigned char array[size]
+		     head:   recommended to be 0
+		     tail:   recommended to be 0
+	   2. Provide uart_flush_tx() macro to allow direct external manipulation
+	      of the tx buffer. This involved moving the other macro definitions
+		  to uart.h
     
 USAGE:
     Refere to the header file uart.h for a description of the routines. 
@@ -41,212 +56,19 @@ LICENSE:
 #include <avr/pgmspace.h>
 #include "uart.h"
 
-
-/*
- *  constants and macros
- */
-
-/* size of RX/TX buffers */
-#define UART_RX_BUFFER_MASK ( UART_RX_BUFFER_SIZE - 1)
-#define UART_TX_BUFFER_MASK ( UART_TX_BUFFER_SIZE - 1)
-
-#if ( UART_RX_BUFFER_SIZE & UART_RX_BUFFER_MASK )
-#error RX buffer size is not a power of 2
-#endif
-#if ( UART_TX_BUFFER_SIZE & UART_TX_BUFFER_MASK )
-#error TX buffer size is not a power of 2
-#endif
-
-#if defined(__AVR_AT90S2313__) \
- || defined(__AVR_AT90S4414__) || defined(__AVR_AT90S4434__) \
- || defined(__AVR_AT90S8515__) || defined(__AVR_AT90S8535__) \
- || defined(__AVR_ATmega103__)
- /* old AVR classic or ATmega103 with one UART */
- #define AT90_UART
- #define UART0_RECEIVE_INTERRUPT   UART_RX_vect 
- #define UART0_TRANSMIT_INTERRUPT  UART_UDRE_vect
- #define UART0_STATUS   USR
- #define UART0_CONTROL  UCR
- #define UART0_DATA     UDR  
- #define UART0_UDRIE    UDRIE
-#elif defined(__AVR_AT90S2333__) || defined(__AVR_AT90S4433__)
- /* old AVR classic with one UART */
- #define AT90_UART
- #define UART0_RECEIVE_INTERRUPT   UART_RX_vect 
- #define UART0_TRANSMIT_INTERRUPT  UART_UDRE_vect
- #define UART0_STATUS   UCSRA
- #define UART0_CONTROL  UCSRB
- #define UART0_DATA     UDR 
- #define UART0_UDRIE    UDRIE
-#elif  defined(__AVR_ATmega8__) || defined(__AVR_ATmega16__) || defined(__AVR_ATmega32__) \
-  || defined(__AVR_ATmega323__)
-  /* ATmega with one USART */
- #define ATMEGA_USART
- #define UART0_RECEIVE_INTERRUPT   USART_RXC_vect
- #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
- #define UART0_STATUS   UCSRA
- #define UART0_CONTROL  UCSRB
- #define UART0_DATA     UDR
- #define UART0_UDRIE    UDRIE
-#elif defined (__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) || defined(__AVR_AT90PWM316__)
- #define ATMEGA_USART
- #define UART0_RECEIVE_INTERRUPT   USART_RX_vect
- #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
- #define UART0_STATUS   UCSRA
- #define UART0_CONTROL  UCSRB
- #define UART0_DATA     UDR
- #define UART0_UDRIE    UDRIE
-#elif defined(__AVR_ATmega163__)
-  /* ATmega163 with one UART */
- #define ATMEGA_UART
- #define UART0_RECEIVE_INTERRUPT   UART_RX_vect
- #define UART0_TRANSMIT_INTERRUPT  UART_UDRE_vect
- #define UART0_STATUS   UCSRA
- #define UART0_CONTROL  UCSRB
- #define UART0_DATA     UDR
- #define UART0_UDRIE    UDRIE
-#elif defined(__AVR_ATmega162__) 
- /* ATmega with two USART */
- #define ATMEGA_USART0
- #define ATMEGA_USART1
- #define UART0_RECEIVE_INTERRUPT   USART0_RXC_vect
- #define UART1_RECEIVE_INTERRUPT   USART1_RXC_vect
- #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
- #define UART1_TRANSMIT_INTERRUPT  USART1_UDRE_vect
- #define UART0_STATUS   UCSR0A
- #define UART0_CONTROL  UCSR0B
- #define UART0_DATA     UDR0
- #define UART0_UDRIE    UDRIE0
- #define UART1_STATUS   UCSR1A
- #define UART1_CONTROL  UCSR1B
- #define UART1_DATA     UDR1
- #define UART1_UDRIE    UDRIE1
-#elif defined(__AVR_ATmega64__) || defined(__AVR_ATmega128__) 
- /* ATmega with two USART */
- #define ATMEGA_USART0
- #define ATMEGA_USART1
- #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
- #define UART1_RECEIVE_INTERRUPT   USART1_RX_vect
- #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
- #define UART1_TRANSMIT_INTERRUPT  USART1_UDRE_vect
- #define UART0_STATUS   UCSR0A
- #define UART0_CONTROL  UCSR0B
- #define UART0_DATA     UDR0
- #define UART0_UDRIE    UDRIE0
- #define UART1_STATUS   UCSR1A
- #define UART1_CONTROL  UCSR1B
- #define UART1_DATA     UDR1
- #define UART1_UDRIE    UDRIE1
-#elif defined(__AVR_ATmega161__)
- /* ATmega with UART */
- #error "AVR ATmega161 currently not supported by this libaray !"
-#elif defined(__AVR_ATmega169__) 
- /* ATmega with one USART */
- #define ATMEGA_USART
- #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
- #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
- #define UART0_STATUS   UCSRA
- #define UART0_CONTROL  UCSRB
- #define UART0_DATA     UDR
- #define UART0_UDRIE    UDRIE
-#elif defined(__AVR_ATmega48__) || defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega48P__) || defined(__AVR_ATmega88P__) || defined(__AVR_ATmega168P__) || defined(__AVR_ATmega328P__) \
- || defined(__AVR_ATmega3250__) || defined(__AVR_ATmega3290__) ||defined(__AVR_ATmega6450__) || defined(__AVR_ATmega6490__)
- /* ATmega with one USART */
- #define ATMEGA_USART0
- #define UART0_RECEIVE_INTERRUPT   USART_RX_vect
- #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
- #define UART0_STATUS   UCSR0A
- #define UART0_CONTROL  UCSR0B
- #define UART0_DATA     UDR0
- #define UART0_UDRIE    UDRIE0
-#elif defined(__AVR_ATtiny2313__) 
- #define ATMEGA_USART
- #define UART0_RECEIVE_INTERRUPT   USART_RX_vect
- #define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
- #define UART0_STATUS   UCSRA
- #define UART0_CONTROL  UCSRB
- #define UART0_DATA     UDR
- #define UART0_UDRIE    UDRIE
-#elif defined(__AVR_ATmega329__) || \
-      defined(__AVR_ATmega649__) || \
-      defined(__AVR_ATmega325__) || \
-      defined(__AVR_ATmega645__) 
-  /* ATmega with one USART */
-  #define ATMEGA_USART0
-  #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
-  #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
-  #define UART0_STATUS   UCSR0A
-  #define UART0_CONTROL  UCSR0B
-  #define UART0_DATA     UDR0
-  #define UART0_UDRIE    UDRIE0
-#elif defined(__AVR_ATmega2560__) || defined(__AVR_ATmega2561__) || defined(__AVR_ATmega1280__)  || defined(__AVR_ATmega1281__) || defined(__AVR_ATmega640__)
-/* ATmega with two USART */
-  #define ATMEGA_USART0
-  #define ATMEGA_USART1
-  #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
-  #define UART1_RECEIVE_INTERRUPT   USART1_RX_vect
-  #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
-  #define UART1_TRANSMIT_INTERRUPT  USART1_UDRE_vect
-  #define UART0_STATUS   UCSR0A
-  #define UART0_CONTROL  UCSR0B
-  #define UART0_DATA     UDR0
-  #define UART0_UDRIE    UDRIE0
-  #define UART1_STATUS   UCSR1A
-  #define UART1_CONTROL  UCSR1B
-  #define UART1_DATA     UDR1
-  #define UART1_UDRIE    UDRIE1  
-#elif defined(__AVR_ATmega644__)
- /* ATmega with one USART */
- #define ATMEGA_USART0
- #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
- #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
- #define UART0_STATUS   UCSR0A
- #define UART0_CONTROL  UCSR0B
- #define UART0_DATA     UDR0
- #define UART0_UDRIE    UDRIE0
-#elif defined(__AVR_ATmega164P__) || defined(__AVR_ATmega324P__) || defined(__AVR_ATmega644P__)
- /* ATmega with two USART */
- #define ATMEGA_USART0
- #define ATMEGA_USART1
- #define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
- #define UART1_RECEIVE_INTERRUPT   USART1_RX_vect
- #define UART0_TRANSMIT_INTERRUPT  USART0_UDRE_vect
- #define UART1_TRANSMIT_INTERRUPT  USART1_UDRE_vect
- #define UART0_STATUS   UCSR0A
- #define UART0_CONTROL  UCSR0B
- #define UART0_DATA     UDR0
- #define UART0_UDRIE    UDRIE0
- #define UART1_STATUS   UCSR1A
- #define UART1_CONTROL  UCSR1B
- #define UART1_DATA     UDR1
- #define UART1_UDRIE    UDRIE1
-#else
- #error "no UART definition for MCU available"
-#endif
-
-
 /*
  *  module global variables
  */
-static volatile unsigned char UART_TxBuf[UART_TX_BUFFER_SIZE];
-static volatile unsigned char UART_RxBuf[UART_RX_BUFFER_SIZE];
-static volatile unsigned char UART_TxHead;
-static volatile unsigned char UART_TxTail;
-static volatile unsigned char UART_RxHead;
-static volatile unsigned char UART_RxTail;
-static volatile unsigned char UART_LastRxError;
+/* size of RX/TX buffers */
+static volatile RingBuffer* UART_RxBuf;
+static volatile RingBuffer* UART_TxBuf;
+static volatile unsigned char  UART_LastRxError;
 
 #if defined( ATMEGA_USART1 )
-static volatile unsigned char UART1_TxBuf[UART_TX_BUFFER_SIZE];
-static volatile unsigned char UART1_RxBuf[UART_RX_BUFFER_SIZE];
-static volatile unsigned char UART1_TxHead;
-static volatile unsigned char UART1_TxTail;
-static volatile unsigned char UART1_RxHead;
-static volatile unsigned char UART1_RxTail;
-static volatile unsigned char UART1_LastRxError;
+static volatile RingBuffer* UART1_RxBuf;
+static volatile RingBuffer* UART1_TxBuf;
+static volatile unsigned char  UART1_LastRxError;
 #endif
-
-
 
 ISR (UART0_RECEIVE_INTERRUPT)	
 /*************************************************************************
@@ -276,16 +98,16 @@ Purpose:  called when the UART has received a character
 #endif
         
     /* calculate buffer index */ 
-    tmphead = ( UART_RxHead + 1) & UART_RX_BUFFER_MASK;
+    tmphead = ( UART_RxBuf->head + 1) & UART_RxBuf->mask;
     
-    if ( tmphead == UART_RxTail ) {
+    if ( tmphead == UART_RxBuf->tail ) {
         /* error: receive buffer overflow */
         lastRxError = UART_BUFFER_OVERFLOW >> 8;
     }else{
         /* store new index */
-        UART_RxHead = tmphead;
+        UART_RxBuf->head = tmphead;
         /* store received data in buffer */
-        UART_RxBuf[tmphead] = data;
+        UART_RxBuf->buffer[tmphead] = data;
     }
     UART_LastRxError |= lastRxError;   
 }
@@ -300,12 +122,12 @@ Purpose:  called when the UART is ready to transmit the next byte
     unsigned char tmptail;
 
     
-    if ( UART_TxHead != UART_TxTail) {
+    if ( UART_TxBuf->head != UART_TxBuf->tail) {
         /* calculate and store new buffer index */
-        tmptail = (UART_TxTail + 1) & UART_TX_BUFFER_MASK;
-        UART_TxTail = tmptail;
+        tmptail = (UART_TxBuf->tail + 1) & UART_TxBuf->mask;
+        UART_TxBuf->tail = tmptail;
         /* get one byte from buffer and write it to UART */
-        UART0_DATA = UART_TxBuf[tmptail];  /* start transmission */
+        UART0_DATA = UART_TxBuf->buffer[tmptail];  /* start transmission */
     }else{
         /* tx buffer empty, disable UDRE interrupt */
         UART0_CONTROL &= ~_BV(UART0_UDRIE);
@@ -318,13 +140,26 @@ Function: uart_init()
 Purpose:  initialize UART and set baudrate
 Input:    baudrate using macro UART_BAUD_SELECT()
 Returns:  none
+Note:     Size of the circular receive buffer, must be power of 2
 **************************************************************************/
-void uart_init(unsigned int baudrate)
+void uart_init(unsigned int baudrate, RingBuffer* rx_buffer, RingBuffer* tx_buffer)
 {
-    UART_TxHead = 0;
-    UART_TxTail = 0;
-    UART_RxHead = 0;
-    UART_RxTail = 0;
+	UART_RxBuf = rx_buffer;
+	UART_TxBuf = tx_buffer;
+		
+	/* test if the size of the circular buffers fits into SRAM */
+	if ( (UART_RxBuf->size+UART_TxBuf->size) >= (RAMEND-0x60 ) ){
+		// Too big.
+		return;
+	}
+	if ( UART_RxBuf->size & UART_RxBuf->mask ){
+		// RX buffer size is not a power of 2
+		return;
+	}
+	if ( UART_TxBuf->size & UART_TxBuf->mask ){
+		// TX buffer size is not a power of 2
+		return;
+	}
     
 #if defined( AT90_UART )
     /* set baud rate */
@@ -403,16 +238,16 @@ unsigned int uart_getc(void)
     unsigned char data;
 
 
-    if ( UART_RxHead == UART_RxTail ) {
+    if ( UART_RxBuf->head == UART_RxBuf->tail ) {
         return UART_NO_DATA;   /* no data available */
     }
     
     /* calculate /store buffer index */
-    tmptail = (UART_RxTail + 1) & UART_RX_BUFFER_MASK;
-    UART_RxTail = tmptail; 
+    tmptail = (UART_RxBuf->tail + 1) & UART_RxBuf->mask;
+    UART_RxBuf->tail = tmptail; 
     
     /* get data from receive buffer */
-    data = UART_RxBuf[tmptail];
+    data = UART_RxBuf->buffer[tmptail];
     
     data = (UART_LastRxError << 8) + data;
     UART_LastRxError = 0;
@@ -420,6 +255,22 @@ unsigned int uart_getc(void)
 
 }/* uart_getc */
 
+void uart_wait_tx_empty(void){
+	while(UART_TxBuf->head != UART_TxBuf->tail){
+		; // wait for the whole buffer to be emptied.
+	}
+}
+
+void uart_wait_tx_free(void){
+	unsigned char tmphead;
+
+	
+	tmphead  = (UART_TxBuf->head + 1) & UART_TxBuf->mask;
+	
+	while ( tmphead == UART_TxBuf->tail ){
+		;/* wait for free space in buffer */
+	}
+}
 
 /*************************************************************************
 Function: uart_putc()
@@ -432,14 +283,14 @@ void uart_putc(unsigned char data)
     unsigned char tmphead;
 
     
-    tmphead  = (UART_TxHead + 1) & UART_TX_BUFFER_MASK;
+    tmphead  = (UART_TxBuf->head + 1) & UART_TxBuf->mask;
     
-    while ( tmphead == UART_TxTail ){
+    while ( tmphead == UART_TxBuf->tail ){
         ;/* wait for free space in buffer */
     }
     
-    UART_TxBuf[tmphead] = data;
-    UART_TxHead = tmphead;
+    UART_TxBuf->buffer[tmphead] = data;
+    UART_TxBuf->head = tmphead;
 
     /* enable UDRE interrupt */
     UART0_CONTROL    |= _BV(UART0_UDRIE);
@@ -502,16 +353,16 @@ Purpose:  called when the UART1 has received a character
     lastRxError = (usr & (_BV(FE1)|_BV(DOR1)) );
         
     /* calculate buffer index */ 
-    tmphead = ( UART1_RxHead + 1) & UART_RX_BUFFER_MASK;
+    tmphead = ( UART1_RxBuf->head + 1) & UART_RxBuf->mask;
     
-    if ( tmphead == UART1_RxTail ) {
+    if ( tmphead == UART1_RxBuf->tail ) {
         /* error: receive buffer overflow */
         lastRxError = UART_BUFFER_OVERFLOW >> 8;
     }else{
         /* store new index */
-        UART1_RxHead = tmphead;
+        UART1_RxBuf->head = tmphead;
         /* store received data in buffer */
-        UART1_RxBuf[tmphead] = data;
+        UART1_RxBuf->buffer[tmphead] = data;
     }
     UART1_LastRxError |= lastRxError;   
 }
@@ -526,12 +377,12 @@ Purpose:  called when the UART1 is ready to transmit the next byte
     unsigned char tmptail;
 
     
-    if ( UART1_TxHead != UART1_TxTail) {
+    if ( UART1_TxBuf->head != UART1_TxBuf->tail) {
         /* calculate and store new buffer index */
-        tmptail = (UART1_TxTail + 1) & UART_TX_BUFFER_MASK;
-        UART1_TxTail = tmptail;
+        tmptail = (UART1_TxBuf->tail + 1) & UART_TxBuf->mask;
+        UART1_TxBuf->tail = tmptail;
         /* get one byte from buffer and write it to UART */
-        UART1_DATA = UART1_TxBuf[tmptail];  /* start transmission */
+        UART1_DATA = UART1_TxBuf->buffer[tmptail];  /* start transmission */
     }else{
         /* tx buffer empty, disable UDRE interrupt */
         UART1_CONTROL &= ~_BV(UART1_UDRIE);
@@ -544,13 +395,26 @@ Function: uart1_init()
 Purpose:  initialize UART1 and set baudrate
 Input:    baudrate using macro UART_BAUD_SELECT()
 Returns:  none
+Note:     buffer sizes must be powers of two.
 **************************************************************************/
-void uart1_init(unsigned int baudrate)
+void uart1_init(unsigned int baudrate, RingBuffer* rx_buffer, RingBuffer* tx_buffer)
 {
-    UART1_TxHead = 0;
-    UART1_TxTail = 0;
-    UART1_RxHead = 0;
-    UART1_RxTail = 0;
+	UART1_RxBuf = rx_buffer;
+	UART1_TxBuf = tx_buffer;
+	
+	/* test if the size of the circular buffers fits into SRAM */
+	if ( (UART1_RxBuf->size+UART1_TxBuf->size) >= (RAMEND-0x60 ) ){
+		// Too big.
+		return;
+	}
+	if ( UART1_RxBuf->size & UART1_RxBuf->mask ){
+		// RX buffer size is not a power of 2
+		return;
+	}
+	if ( UART1_TxBuf->size & UART1_TxBuf->mask ){
+		// TX buffer size is not a power of 2
+		return;
+	}
     
 
     /* Set baud rate */
@@ -586,16 +450,16 @@ unsigned int uart1_getc(void)
     unsigned char data;
 
 
-    if ( UART1_RxHead == UART1_RxTail ) {
+    if ( UART1_RxBuf->head == UART1_RxBuf->tail ) {
         return UART_NO_DATA;   /* no data available */
     }
     
     /* calculate /store buffer index */
-    tmptail = (UART1_RxTail + 1) & UART_RX_BUFFER_MASK;
-    UART1_RxTail = tmptail; 
+    tmptail = (UART1_RxBuf->tail + 1) & UART_RxBuf->mask;
+    UART1_RxBuf->tail = tmptail; 
     
     /* get data from receive buffer */
-    data = UART1_RxBuf[tmptail];
+    data = UART1_RxBuf->buffer[tmptail];
     
     data = (UART1_LastRxError << 8) + data;
     UART_LastRxError = 0;
@@ -615,14 +479,14 @@ void uart1_putc(unsigned char data)
     unsigned char tmphead;
 
     
-    tmphead  = (UART1_TxHead + 1) & UART_TX_BUFFER_MASK;
+    tmphead  = (UART1_TxBuf->head + 1) & UART_TxBuf->mask;
     
-    while ( tmphead == UART1_TxTail ){
+    while ( tmphead == UART1_TxBuf->tail ){
         ;/* wait for free space in buffer */
     }
     
-    UART1_TxBuf[tmphead] = data;
-    UART1_TxHead = tmphead;
+    UART1_TxBuf->buffer[tmphead] = data;
+    UART1_TxBuf->head = tmphead;
 
     /* enable UDRE interrupt */
     UART1_CONTROL    |= _BV(UART1_UDRIE);
