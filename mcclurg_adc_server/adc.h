@@ -13,14 +13,19 @@
 #include <math.h>
 
 #ifdef DEBUG
-#define toggleC5() PORTC ^= (1 << PINC5)
+#define C5ON() PORTC |= (1 << PINC5)
+#define C5OFF() PORTC &= ~(1 << PINC5)
 #endif
 
 #define adc_disable()	ADCSRA = (1<<ADIF)
-#define adc_read()		ADC
+#define adc_read()		ADCH
 
-//#define ADC_PRESCALER   2 // Divide by 4
-#define ADC_PRESCALER   4 // Divide by 8
+// Can't really go much faster unless you write the ADC ISR code in assembly:
+// 1. Current execution time of the ISR is about 80 cycles.
+// 2. Since the ADC executes every 13.5 cycles, the current period comes to about 100 cycles.
+// 3. The next smallest period is about 50 cycles, which is simply not enough to do anything in the ISR.
+//#define ADC_PRESCALER   3 // Divide by 8.
+#define ADC_PRESCALER   3
 
 #define ADC_MODE_AUTO   1
 #define ADC_MODE_TIMER0 2
@@ -35,10 +40,7 @@ void adc_init(	uint8_t mode,
 				uint8_t   mask,
 				uint8_t*  schedule,
 				uint8_t*  muxSchedule,
-				uint8_t   scheduleLen,
-				uint8_t** bufferStartArray,
-				uint8_t** bufferEndArray,
-				uint8_t*  bufferCurrentLenArray);
+				uint8_t   scheduleLen);
 
 void adc_trigger(void);
 

@@ -5,7 +5,7 @@
     <ProjectVersion>6.1</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
     <ProjectGuid>{643043eb-c4b0-441e-8a95-998ce91adcb4}</ProjectGuid>
-    <avrdevice>ATmega328</avrdevice>
+    <avrdevice>AT90PWM316</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>StaticLibrary</OutputType>
     <Language>C</Language>
@@ -36,9 +36,9 @@
     <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <OverrideVtorValue>
     </OverrideVtorValue>
-    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
-    <avrtoolinterface>
-    </avrtoolinterface>
+    <avrtool>
+    </avrtool>
+    <avrtoolinterface>ISP</avrtoolinterface>
     <com_atmel_avrdbg_tool_simulator>
       <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
       <ToolName>Simulator</ToolName>
@@ -48,22 +48,22 @@
       </StimuliFile>
       <Channel>
         <host>127.0.0.1</host>
-        <port>7729</port>
+        <port>47287</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
     <com_atmel_avrdbg_tool_stk600>
-      <ToolType xmlns="">com.atmel.avrdbg.tool.stk600</ToolType>
-      <ToolName xmlns="">STK600</ToolName>
-      <ToolNumber xmlns="">0048395C7A7A</ToolNumber>
-      <StimuliFile xmlns="">
+      <ToolType>com.atmel.avrdbg.tool.stk600</ToolType>
+      <ToolName>STK600</ToolName>
+      <ToolNumber>0048395C7A7A</ToolNumber>
+      <StimuliFile>
       </StimuliFile>
-      <Channel xmlns="">
+      <Channel>
         <host>127.0.0.1</host>
-        <port>4843</port>
+        <port>29637</port>
         <ssl>False</ssl>
       </Channel>
-      <ToolOptions xmlns="">
+      <ToolOptions>
         <InterfaceName>ISP</InterfaceName>
         <InterfaceProperties>
           <JtagDbgClock>249000</JtagDbgClock>
@@ -82,6 +82,7 @@
     <UncachedRange />
     <OverrideVtor>false</OverrideVtor>
     <BootSegment>2</BootSegment>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -121,13 +122,15 @@
         <avrgcc.compiler.symbols.DefSymbols>
           <ListValues>
             <Value>DEBUG</Value>
+            <Value>F_CPU=8000000L</Value>
           </ListValues>
         </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
         <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.warnings.ExtraWarnings>True</avrgcc.compiler.warnings.ExtraWarnings>
         <avrgcc.linker.libraries.Libraries>
           <ListValues>
             <Value>libm</Value>
@@ -139,6 +142,72 @@
     <OutputFileName>mcclurg_adc_server_demo</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputType>Executable</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'AT90PWM316' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>F_CPU=8000000L</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.warnings.ExtraWarnings>True</avrgcc.compiler.warnings.ExtraWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+    <OutputFileName>libmcclurg_adc_server_at90pwm316</OutputFileName>
+    <OutputFileExtension>.a</OutputFileExtension>
+    <OutputType>StaticLibrary</OutputType>
+    <OutputPath>bin\AT90PWM316\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'ATMEGA328P' ">
+    <ToolchainSettings>
+      <AvrGcc xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>F_CPU=8000000L</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.warnings.ExtraWarnings>True</avrgcc.compiler.warnings.ExtraWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+    <OutputFileName>libmcclurg_adc_server_atmega328p</OutputFileName>
+    <OutputFileExtension>.a</OutputFileExtension>
+    <OutputType>StaticLibrary</OutputType>
+    <OutputPath>bin\ATMEGA328P\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="adc.c">
