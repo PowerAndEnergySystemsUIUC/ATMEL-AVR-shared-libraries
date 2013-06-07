@@ -38,7 +38,8 @@
     </OverrideVtorValue>
     <avrtool>
     </avrtool>
-    <avrtoolinterface>ISP</avrtoolinterface>
+    <avrtoolinterface>
+    </avrtoolinterface>
     <com_atmel_avrdbg_tool_simulator>
       <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
       <ToolName>Simulator</ToolName>
@@ -48,7 +49,7 @@
       </StimuliFile>
       <Channel>
         <host>127.0.0.1</host>
-        <port>47287</port>
+        <port>29637</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
