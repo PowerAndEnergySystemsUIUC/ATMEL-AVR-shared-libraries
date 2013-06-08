@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include "adc.h"
 
+#define D5ON()	PORTD |= (1 << PIND5)
+#define D6ON()	PORTD |= (1 << PIND6)
+#define D5OFF()	PORTD &= ~(1 << PIND5)
+#define D6OFF()	PORTD &= ~(1 << PIND6)
+
 // Both must be a power of 2
 #define SCHEDULE_LEN	4
 #define BUFFER_LEN		(SCHEDULE_LEN*2)
@@ -17,10 +22,32 @@
 // Mask indicating which ADCs to use.
 #define ADC_MASK		0b00001111
 
+// Prescale by 8.
+#define start_timer0()	TCCR0B = (2<<CS00)
+#define stop_timer0()	TCCR0B = 0
+
 // Allocate the space necessary for the ADC buffer.
 uint8_t bufferr[BUFFER_LEN];
 uint8_t schedule[SCHEDULE_LEN];
 RingBuffer buffer;
+
+ISR(TIMER0_COMP_A_vect){
+	D5ON();
+	sei();
+	adc_trigger();
+	D5OFF();
+}
+
+void timer0_init(void){
+	// Set timer to reset on compare match
+	TCCR0A = (2<<WGM00);
+	
+	// Start counter at 0
+	TCNT0 = 0;
+	OCR0A = 200;
+	
+	TIMSK0 = (1<<OCIE0A);
+}
 
 int main(void)
 {
@@ -55,19 +82,19 @@ int main(void)
 	PORTC &= ~(1<<PINC5);
 	
 	DDRD = (1<<PIND5) | (1<<PIND6);
-	PORTD = (1<<PIND6);
+	D6ON();
 	
-	adc_init(ADC_MODE_AUTO, &buffer, schedule, SCHEDULE_LEN);
+	adc_init(ADC_MODE_MANUAL, &buffer, schedule, SCHEDULE_LEN);
+	timer0_init();
 	sei();
+	
 	adc_trigger();
+	D6OFF();
 	
-	// LED on.
-	PORTD = (1<<PIND5);
-	
+	start_timer0();
 	while(1){}
-	PORTC |= (1<<PINC5);
-	PORTD  = 0;
-	 return 0;
+	
+	return 0;
 }
 
 #endif
