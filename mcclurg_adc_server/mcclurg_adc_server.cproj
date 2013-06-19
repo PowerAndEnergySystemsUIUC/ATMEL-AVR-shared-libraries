@@ -4,20 +4,28 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>6.1</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
-    <ProjectGuid>{643043eb-c4b0-441e-8a95-998ce91adcb4}</ProjectGuid>
+    <ProjectGuid>{a83f4c61-b63a-41a8-a53f-7ffeef649884}</ProjectGuid>
     <avrdevice>AT90PWM316</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
-    <OutputType>StaticLibrary</OutputType>
+    <OutputType>Executable</OutputType>
     <Language>C</Language>
-    <OutputFileName>lib$(MSBuildProjectName)</OutputFileName>
-    <OutputFileExtension>.a</OutputFileExtension>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AvrGccProjectExtensions>
-    </AvrGccProjectExtensions>
     <AssemblyName>mcclurg_adc_server</AssemblyName>
     <Name>mcclurg_adc_server</Name>
     <RootNamespace>mcclurg_adc_server</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <OverrideVtorValue>
+    </OverrideVtorValue>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <CacheFlash>true</CacheFlash>
+    <UncachedRange />
+    <BootSegment>2</BootSegment>
     <AsfFrameworkConfig>
       <framework-data xmlns="">
         <options />
@@ -30,41 +38,33 @@
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
-    <KeepTimersRunning>true</KeepTimersRunning>
-    <CacheFlash>true</CacheFlash>
-    <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress>0x20000000</RamSnippetAddress>
-    <OverrideVtorValue>
-    </OverrideVtorValue>
-    <avrtool>
-    </avrtool>
-    <avrtoolinterface>
-    </avrtoolinterface>
+    <avrtool>com.atmel.avrdbg.tool.stk600</avrtool>
+    <avrtoolinterface>ISP</avrtoolinterface>
     <com_atmel_avrdbg_tool_simulator>
-      <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
-      <ToolName>Simulator</ToolName>
-      <ToolNumber>
+      <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolName xmlns="">Simulator</ToolName>
+      <ToolNumber xmlns="">
       </ToolNumber>
-      <StimuliFile>
+      <StimuliFile xmlns="">
       </StimuliFile>
-      <Channel>
+      <Channel xmlns="">
         <host>127.0.0.1</host>
-        <port>29637</port>
+        <port>31518</port>
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
     <com_atmel_avrdbg_tool_stk600>
-      <ToolType>com.atmel.avrdbg.tool.stk600</ToolType>
-      <ToolName>STK600</ToolName>
-      <ToolNumber>0048395C7A7A</ToolNumber>
-      <StimuliFile>
+      <ToolType xmlns="">com.atmel.avrdbg.tool.stk600</ToolType>
+      <ToolName xmlns="">STK600</ToolName>
+      <ToolNumber xmlns="">0048395C7A7A</ToolNumber>
+      <StimuliFile xmlns="">
       </StimuliFile>
-      <Channel>
+      <Channel xmlns="">
         <host>127.0.0.1</host>
-        <port>29637</port>
+        <port>31518</port>
         <ssl>False</ssl>
       </Channel>
-      <ToolOptions>
+      <ToolOptions xmlns="">
         <InterfaceName>ISP</InterfaceName>
         <InterfaceProperties>
           <JtagDbgClock>249000</JtagDbgClock>
@@ -80,14 +80,11 @@
         </InterfaceProperties>
       </ToolOptions>
     </com_atmel_avrdbg_tool_stk600>
-    <UncachedRange />
-    <OverrideVtor>false</OverrideVtor>
-    <BootSegment>2</BootSegment>
-    <eraseonlaunchrule>0</eraseonlaunchrule>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
       <AvrGcc>
+        <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
         <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
         <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
         <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
@@ -114,6 +111,46 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <AvrGcc>
+  <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>DEBUG</Value>
+      <Value>F_CPU=16000000L</Value>
+      <Value>DUMMY_ADC_READINGS</Value>
+    </ListValues>
+  </avrgcc.compiler.symbols.DefSymbols>
+  <avrgcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>../../fleury_uart</Value>
+      <Value>../../mcclurg_datatypes</Value>
+    </ListValues>
+  </avrgcc.compiler.directories.IncludePaths>
+  <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.PrepareDataForGarbageCollection>False</avrgcc.compiler.optimization.PrepareDataForGarbageCollection>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm</Value>
+    </ListValues>
+  </avrgcc.linker.libraries.Libraries>
+  <avrgcc.linker.optimization.GarbageCollectUnusedSections>False</avrgcc.linker.optimization.GarbageCollectUnusedSections>
+  <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+</AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Simulate' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
         <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
         <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
         <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
@@ -123,94 +160,37 @@
         <avrgcc.compiler.symbols.DefSymbols>
           <ListValues>
             <Value>DEBUG</Value>
-            <Value>F_CPU=8000000L</Value>
+            <Value>F_CPU=16000000L</Value>
           </ListValues>
         </avrgcc.compiler.symbols.DefSymbols>
-        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PrepareDataForGarbageCollection>False</avrgcc.compiler.optimization.PrepareDataForGarbageCollection>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
         <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
         <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
         <avrgcc.compiler.warnings.ExtraWarnings>True</avrgcc.compiler.warnings.ExtraWarnings>
+        <avrgcc.compiler.warnings.Undefined>True</avrgcc.compiler.warnings.Undefined>
+        <avrgcc.compiler.warnings.Pedantic>True</avrgcc.compiler.warnings.Pedantic>
         <avrgcc.linker.libraries.Libraries>
           <ListValues>
             <Value>libm</Value>
           </ListValues>
         </avrgcc.linker.libraries.Libraries>
+        <avrgcc.linker.optimization.GarbageCollectUnusedSections>False</avrgcc.linker.optimization.GarbageCollectUnusedSections>
         <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
       </AvrGcc>
     </ToolchainSettings>
-    <OutputFileName>mcclurg_adc_server_demo</OutputFileName>
-    <OutputFileExtension>.elf</OutputFileExtension>
-    <OutputType>Executable</OutputType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'AT90PWM316' ">
-    <ToolchainSettings>
-      <AvrGcc>
-        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
-        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
-        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
-        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
-        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
-        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-        <avrgcc.compiler.symbols.DefSymbols>
-          <ListValues>
-            <Value>F_CPU=8000000L</Value>
-          </ListValues>
-        </avrgcc.compiler.symbols.DefSymbols>
-        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
-        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
-        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
-        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.compiler.warnings.ExtraWarnings>True</avrgcc.compiler.warnings.ExtraWarnings>
-        <avrgcc.linker.libraries.Libraries>
-          <ListValues>
-            <Value>libm</Value>
-          </ListValues>
-        </avrgcc.linker.libraries.Libraries>
-        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
-      </AvrGcc>
-    </ToolchainSettings>
-    <OutputFileName>libmcclurg_adc_server_at90pwm316</OutputFileName>
-    <OutputFileExtension>.a</OutputFileExtension>
-    <OutputType>StaticLibrary</OutputType>
-    <OutputPath>bin\AT90PWM316\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'ATMEGA328P' ">
-    <ToolchainSettings>
-      <AvrGcc xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
-        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
-        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
-        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
-        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
-        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-        <avrgcc.compiler.symbols.DefSymbols>
-          <ListValues>
-            <Value>F_CPU=8000000L</Value>
-          </ListValues>
-        </avrgcc.compiler.symbols.DefSymbols>
-        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
-        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
-        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
-        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.compiler.warnings.ExtraWarnings>True</avrgcc.compiler.warnings.ExtraWarnings>
-        <avrgcc.linker.libraries.Libraries>
-          <ListValues>
-            <Value>libm</Value>
-          </ListValues>
-        </avrgcc.linker.libraries.Libraries>
-        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
-      </AvrGcc>
-    </ToolchainSettings>
-    <OutputFileName>libmcclurg_adc_server_atmega328p</OutputFileName>
-    <OutputFileExtension>.a</OutputFileExtension>
-    <OutputType>StaticLibrary</OutputType>
-    <OutputPath>bin\ATMEGA328P\</OutputPath>
+    <OutputPath>bin\Simulate\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\fleury_uart\uart.c">
+      <SubType>compile</SubType>
+      <Link>lib\uart.c</Link>
+    </Compile>
+    <Compile Include="..\mcclurg_datatypes\ringBuffer.c">
+      <SubType>compile</SubType>
+      <Link>lib\ringBuffer.c</Link>
+    </Compile>
     <Compile Include="adc.c">
       <SubType>compile</SubType>
     </Compile>
@@ -222,9 +202,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="NOTICE.txt">
-      <SubType>compile</SubType>
-    </None>
+    <Folder Include="lib" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

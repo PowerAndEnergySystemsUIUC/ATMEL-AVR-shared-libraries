@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "mcclurg_adc_server", "mcclurg_adc_server.cproj", "{A83F4C61-B63A-41A8-A53F-7FFEEF649884}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+		Simulate|AVR = Simulate|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A83F4C61-B63A-41A8-A53F-7FFEEF649884}.Debug|AVR.ActiveCfg = Debug|AVR
+		{A83F4C61-B63A-41A8-A53F-7FFEEF649884}.Debug|AVR.Build.0 = Debug|AVR
+		{A83F4C61-B63A-41A8-A53F-7FFEEF649884}.Release|AVR.ActiveCfg = Release|AVR
+		{A83F4C61-B63A-41A8-A53F-7FFEEF649884}.Release|AVR.Build.0 = Release|AVR
+		{A83F4C61-B63A-41A8-A53F-7FFEEF649884}.Simulate|AVR.ActiveCfg = Simulate|AVR
+		{A83F4C61-B63A-41A8-A53F-7FFEEF649884}.Simulate|AVR.Build.0 = Simulate|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -14,15 +14,27 @@
 #include <util/atomic.h>
 #include <stdlib.h>
 #include <math.h>
+#include "ringBuffer.h"
 
 #ifdef DEBUG
-#define C5ON() PORTC |= (1 << PINC5)
-#define C5OFF() PORTC &= ~(1 << PINC5)
+#ifndef ADC_OUT_PORT
+#define ADC_OUT_PORT PORTB
+#define ADC_OUT_PIN  PINB0
+#define ADC_OUT_DDR  DDRB
 #endif
 
-#define adc_disable()	ADCSRA = (1<<ADIF)
+#ifndef ADC_OUT_PIN
+#error "you have to specify ADC_OUT_PIN"
+#endif
+
+#ifndef ADC_OUT_DDR
+#error "you have to specify ADC_OUT_DDR"
+#endif
+
+#define ADC_OUT_ON()	ADC_OUT_PORT |=  (1 << ADC_OUT_PIN)
+#define ADC_OUT_OFF()	ADC_OUT_PORT &= ~(1 << ADC_OUT_PIN)
+#endif
 #define adc_read()		ADCH
-#define adc_timer_
 
 // 1. ADC takes 13.5*ADC_PRESCALER cycles to finish, with 2*ADC_PRESCALER cycles of setup time between runs
 // 2. User code of the ISR is 56 cycles, not including setup and teardown time, but ADC runs during the ISR.
@@ -36,17 +48,11 @@
 #define ADC_MODE_AUTO	0x10 // Autoconversion mode: Loop through the schedule continuously at the maximum rate.
 #define ADC_MODE_MANUAL 0x20 // Each time ADC is triggered, loop through the schedule once at the maximum rate.
 
-typedef struct{
-	unsigned char* buffer;
-	unsigned char  size;
-	unsigned char  head;
-	unsigned char  tail;
-	unsigned char  mask;
-} RingBuffer;
-
 void adc_enable(void);
+void adc_disable(void);
+uint8_t adc_is_busy(void);
 
-void adc_encode_muxSchedule(uint8_t* scheduleIndices, uint8_t scheduleLen, uint8_t mask);
+void adc_encode_muxSchedule(uint8_t* scheduleIndices, uint8_t scheduleLen);
 
 // Mode is either ADC_MODE_AUTO, ADC_MODE_MANUAL, or a mask specifying the autotrigger source selection bits.
 void adc_init(	uint8_t mode,
@@ -55,7 +61,7 @@ void adc_init(	uint8_t mode,
 				uint8_t	scheduleLen);
 
 void adc_trigger(void);
-
+void adc_reset_schedule(void);
 
 
 #endif
