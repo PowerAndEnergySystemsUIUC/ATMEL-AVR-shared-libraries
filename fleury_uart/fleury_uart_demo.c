@@ -6,7 +6,7 @@
  */ 
 
 #ifdef FLEURY_UART_DEMO
-#include "fleury_uart.h"
+#include "uart.h"
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
@@ -28,17 +28,8 @@ RingBuffer rxbuf;
 int main(void)
 {
 	int i;
-	txbuf.buffer = txbuff;
-	txbuf.size   = BUFLEN;
-	txbuf.mask   = BUFLEN-1;
-	txbuf.head   = 0;
-	txbuf.tail   = 0;
-	
-	rxbuf.buffer = rxbuff;
-	rxbuf.size   = BUFLEN;
-	rxbuf.mask   = BUFLEN-1;
-	rxbuf.head   = 0;
-	rxbuf.tail   = 0;
+	ringBuffer_initialize(&txbuf,txbuff,BUFLEN);
+	ringBuffer_initialize(&rxbuf,rxbuff,BUFLEN);
 	
 	uart_init( UART_BAUD_SELECT_DOUBLE_SPEED(UART_BAUD_RATE,F_CPU), &rxbuf, &txbuf);
 	
@@ -48,14 +39,14 @@ int main(void)
 	
 	sei();
 	
-	uart_puts_P("You won 32 dollars!\n");
+	uart_puts_P("\nYou won 32 dollars!\n");
 	
 	uart_wait_tx_empty();
 	for(i = 0; i < BUFLEN; ++i){
 		txbuff[i] = '$';
 	}
-	txbuf.head   = BUFLEN-1;
-	txbuf.tail   = 0;
+	txbuf.head	= BUFLEN-1;
+	txbuf.tail	= 0;
 	uart_flush_tx();
 	uart_putc('\n');
 

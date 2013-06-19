@@ -28,7 +28,7 @@
       </StimuliFile>
       <Channel>
         <host>127.0.0.1</host>
-        <port>29637</port>
+        <port>31518</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>
@@ -109,7 +109,7 @@
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputType>Executable</OutputType>
     <ToolchainSettings>
-      <AvrGcc xmlns="">
+      <AvrGcc>
         <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
         <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
         <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
@@ -122,6 +122,11 @@
             <Value>UART_CONFIGURE_FOR_STDIO</Value>
           </ListValues>
         </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>../../mcclurg_datatypes</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
         <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
@@ -206,22 +211,22 @@
         <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
         <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.compiler.warnings.WarningsAsErrors>True</avrgcc.compiler.warnings.WarningsAsErrors>
+        <avrgcc.compiler.warnings.ExtraWarnings>True</avrgcc.compiler.warnings.ExtraWarnings>
+        <avrgcc.compiler.warnings.Undefined>True</avrgcc.compiler.warnings.Undefined>
+        <avrgcc.compiler.warnings.Pedantic>True</avrgcc.compiler.warnings.Pedantic>
         <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
       </AvrGcc>
     </ToolchainSettings>
     <OutputPath>bin\WITH_STDIO_AT90PWM316\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="fleury_uart.h">
+    <Compile Include="..\mcclurg_datatypes\ringBuffer.c">
       <SubType>compile</SubType>
+      <Link>lib_ringbuffer\ringBuffer.c</Link>
     </Compile>
     <Compile Include="fleury_uart_demo.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="fleury_uart.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="uart.c">
@@ -230,6 +235,9 @@
     <Compile Include="uart.h">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lib_ringbuffer" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\AvrGCC.targets" />
 </Project>
