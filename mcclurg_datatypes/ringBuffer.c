@@ -76,3 +76,14 @@ void ringBuffer_write(RingBuffer* buff, uint8_t data){
 	buff->head = tmphead;
 	buff->buffer[tmphead] = data;
 }
+
+uint8_t ringBuffer_peek(RingBuffer* buff, uint8_t index){
+	uint8_t tmptail;
+	
+	if(buff->head == buff->tail || index >= (buff->size - 1)){
+		return 0;
+	}
+	
+	tmptail = (buff->tail + 1 + index) & buff->mask;
+	return buff->buffer[tmptail];
+}

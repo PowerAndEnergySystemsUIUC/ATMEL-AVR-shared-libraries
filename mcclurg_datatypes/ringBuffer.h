@@ -60,4 +60,11 @@ void ringBuffer_write(RingBuffer* buff, uint8_t data);
 /************************************************************************/
 void ringBuffer_write_blocking(RingBuffer* buff, uint8_t data);
 
+/************************************************************************/
+/* Returns the index'th element of the ring buffer without modifying    */
+/* the read status of the buffer. Returns 0 if the buffer is empty or   */
+/* the specified index is greater than or equal to one less than the    */
+/* buffer size.                                                         */
+/************************************************************************/
+uint8_t ringBuffer_peek(RingBuffer* buff, uint8_t index);
 #endif /* RINGBUFFERTYPE_H_ */

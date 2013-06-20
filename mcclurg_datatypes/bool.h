@@ -8,6 +8,7 @@
 
 #ifndef BOOL_H_
 #define BOOL_H_
+#include <stdint.h>
 
 #define true 1
 #define false 0
