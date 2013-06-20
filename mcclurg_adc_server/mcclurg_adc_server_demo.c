@@ -16,10 +16,11 @@
 
 #define UART_BAUD_RATE 115200L
 
-#define D5ON()	PORTD |= (1 << PIND5)
-#define D6ON()	PORTD |= (1 << PIND6)
-#define D5OFF()	PORTD &= ~(1 << PIND5)
-#define D6OFF()	PORTD &= ~(1 << PIND6)
+#define DEBUG_PIN0_ON()	PORTB |= (1 << PINB0)
+#define DEBUG_PIN1_ON()	PORTB |= (1 << PINB1)
+#define DEBUG_PIN0_OFF()	PORTB &= ~(1 << PINB0)
+#define DEBUG_PIN1_OFF()	PORTB &= ~(1 << PINB0)
+#define SETUP_DEBUG_PINS()	DDRB |= (1 << PINB0) | (1 << PINB1)
 
 // Both must be a power of 2
 #define SCHEDULE_LEN	4
@@ -32,17 +33,20 @@
 // 4. ADC goes through schedule, and must be guaranteed enough space.
 #define BUFFER_LEN		(SCHEDULE_LEN*2)
 #define RXBUFFER_LEN    BUFFER_LEN
+#define TXBUFFER_LEN    2*BUFFER_LEN
 
 // Prescale by 8.
 #define start_timer0()	TCNT0 = 250; TCCR0B = (3<<CS00)
 #define stop_timer0()	TCCR0B = 0
 
 // Allocate the space necessary for the ADC buffer.
-uint8_t txbuffer_storage[BUFFER_LEN];
-
+uint8_t txbuffer_storage[TXBUFFER_LEN];
 uint8_t rxbuffer_storage[RXBUFFER_LEN];
+uint8_t adcbuffer_storage[BUFFER_LEN];
+
 uint8_t adc_mux_schedule[SCHEDULE_LEN];
 
+RingBuffer adcbuffer;
 RingBuffer rxbuffer;
 RingBuffer txbuffer;
 
@@ -52,12 +56,18 @@ ISR(TIMER0_COMP_A_vect)
 ISR(TIMER0_COMPA_vect)
 #endif
 {
-	D5ON();
+	uint8_t i;
+	DEBUG_PIN0_ON();
 	sei();
 	adc_trigger();
-	uart_flush_tx();
-	uart_wait_tx_empty();
-	D5OFF();
+	if(ringBuffer_canRead(&adcbuffer)){
+		for(i = 0; i < SCHEDULE_LEN; i++){
+			uart_put_hex8(ringBuffer_read(&adcbuffer));
+			//uart_putc(' ');
+		}
+		uart_putc('\n');
+	}
+	DEBUG_PIN0_OFF();
 }
 
 void timer0_init(void){
@@ -74,27 +84,37 @@ void timer0_init(void){
 int main(void)
 {
 	int i;
+	int count = 0;
+	
+	DDRB = 0;
+	DDRC = 0;
+	DDRE = 0;
 	
 	// Enable the pullup on RESET pin.
 	#if defined(__AVR_AT90PWM316__)
 	PORTE = (1<<PINE0);
+	PORTE &= ~(1<<PINE0);
 	#elif defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
 	PORTC = (1<<PINC6);
+	PORTC &= ~(1<<PINC6);
 	#else
 	#warning "Didn't enable reset pin pullup"
 	#endif
 	
 	// Setup all of port C as inputs, except for pin C5
-	DDRC = (1<<PINC5);
-	PORTC &= ~(1<<PINC5);
+	SETUP_DEBUG_PINS();
 	
-	DDRD |= (1<<PIND5) | (1<<PIND6);
+	// Set up the ADC single conversion pin.
+	DDRC  &= ~(1<<PINC6);
+	PORTC &= ~(1<<PINC6);
+	
+	// Disable all the ADC digital inputs.
+	DIDR1 = 0xFF;
+	DIDR0 = 0xFF & ~(1<<ADC1D);
 	
 	// populate the buffer with known values
-	for(int i = 0; i < BUFFER_LEN; i++){
-		txbuffer_storage[i] = '0';
-	}
-	ringBuffer_initialize(&txbuffer,txbuffer_storage,BUFFER_LEN);
+	ringBuffer_initialize(&txbuffer,txbuffer_storage,TXBUFFER_LEN);
+	ringBuffer_initialize(&adcbuffer,adcbuffer_storage,BUFFER_LEN);
 	ringBuffer_initialize(&rxbuffer,rxbuffer_storage,RXBUFFER_LEN);
 	
 	// Populate the ADC read schedule with the mux indices that you want.
@@ -111,46 +131,51 @@ int main(void)
 	adc_encode_muxSchedule(adc_mux_schedule, SCHEDULE_LEN);
 	
 	
-	adc_init(ADC_MODE_MANUAL, &txbuffer, adc_mux_schedule, SCHEDULE_LEN);
+	adc_init(ADC_MODE_MANUAL, &adcbuffer, adc_mux_schedule, SCHEDULE_LEN);
 	timer0_init();
 	sei();
-	uart_puts_P("\f\r\n\r\nADC and UART Demo. Commands:\nb      Begin 4 channel read bursts at CLK/16K\ne      End reading.\n");
-	uart_wait_tx_empty();
+	uart_puts_P("\f\r\n\r\nADC and UART Demo. Commands:\n"
+				"b      Begin 4 channel read bursts at CLK/16K\n"
+				"e      End reading.\n"
+				"s      Single conversion.\n");
 	
-	D6OFF();
+	DEBUG_PIN1_OFF();
 	while(1)
 	{
 		do
 		{
 			i = uart_getc();
 		} while (i == UART_NO_DATA);
-		D6ON();
+		DEBUG_PIN1_ON();
 		if(i == 'b'){
-			uart_flush_tx();
-			uart_wait_tx_empty();
 			uart_puts_P("Begin.\n");
-			uart_wait_tx_empty();
-			D6OFF();
 			start_timer0();
 		}
 		else if(i == 'e'){
 			stop_timer0();
-			D6OFF();
 			_delay_us(100);
-			uart_flush_tx();
-			uart_wait_tx_empty();
 			uart_puts_P("End.\n");
-			uart_wait_tx_empty();
+		}
+		else if(i == 's'){
+			uart_puts_P("ADC");
+			uart_put_hex8(count);
+			uart_puts_P(": ");
+			i = adc_single_conversion(count);
+			uart_put_hex8((i >> 8) & 0xFF);
+			uart_put_hex8(i & 0xFF);
+			uart_putc('\n');
+			count = (count + 1) & 0xF;
+			if(count == 11)
+			{
+				count = 13;
+			}
 		}
 		else{
-			uart_flush_tx();
-			uart_wait_tx_empty();
 			uart_puts_P("Invalid command: ");
-			uart_wait_tx_empty();
 			uart_putc(i);
 			uart_putc('\n');
-			D6OFF();
 		}
+		DEBUG_PIN1_OFF();
 	}
 	
 	return 0;

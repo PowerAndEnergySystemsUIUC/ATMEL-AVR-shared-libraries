@@ -36,6 +36,10 @@
 #endif
 #define adc_read()		ADCH
 
+#ifndef ADC_REFERENCE
+#define ADC_REFERENCE 1
+#endif
+
 // 1. ADC takes 13.5*ADC_PRESCALER cycles to finish, with 2*ADC_PRESCALER cycles of setup time between runs
 // 2. User code of the ISR is 56 cycles, not including setup and teardown time, but ADC runs during the ISR.
 //
@@ -62,6 +66,7 @@ void adc_init(	uint8_t mode,
 
 void adc_trigger(void);
 void adc_reset_schedule(void);
+uint16_t adc_single_conversion(uint8_t muxVal);
 
 
 #endif

@@ -122,7 +122,7 @@
     <ListValues>
       <Value>DEBUG</Value>
       <Value>F_CPU=16000000L</Value>
-      <Value>DUMMY_ADC_READINGS</Value>
+      <Value>NO_DUMMY_ADC_READINGS</Value>
     </ListValues>
   </avrgcc.compiler.symbols.DefSymbols>
   <avrgcc.compiler.directories.IncludePaths>

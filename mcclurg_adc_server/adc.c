@@ -48,7 +48,7 @@ ISR (ADC_vect)
 	
 	// This is the result from the current scheduled MUX
 	#ifdef DUMMY_ADC_READINGS
-	uint8_t tmp = ((_adc_mux_schedule[(tmphead + _adc_schedule_mask - 1) & _adc_schedule_mask] & ~(1 << ADLAR)) >> MUX0);
+	uint8_t tmp = ((_adc_mux_schedule[(tmphead + _adc_schedule_mask - 1) & _adc_schedule_mask] & ~((1 << ADLAR) | (ADC_REFERENCE << REFS0))) >> MUX0);
 	if(tmp < 10){
 		_adc_buffer->buffer[tmphead] = '0'+tmp;
 	}
@@ -92,7 +92,7 @@ void adc_trigger(void){
 	// Set the MUX for the first conversion.
 	// We have rotated the schedule to the left by 1, so this is the first element of the schedule.
 	// remember, that adc_schedule_mask is nothing more than adc_schedule_len - 1
-	ADMUX  = (1 << ADLAR) | (_adc_mux_schedule[(_adc_buffer->head + _adc_schedule_mask) & _adc_schedule_mask] << MUX0);
+	ADMUX  = _adc_mux_schedule[(_adc_buffer->head + _adc_schedule_mask) & _adc_schedule_mask];
 	
 	// Start the conversion
 	ADCSRA = (1 << ADATE) | (1<<ADEN) | (1<<ADIE) | (ADC_PRESCALER << ADPS0) | (1<<ADSC) | (1<<ADIF);
@@ -103,7 +103,7 @@ void adc_trigger(void){
 	
 	// Set the MUX for the next conversion.
 	// We have rotated the schedule to the left by 1, so this is the second element of the schedule.
-	ADMUX  = (1 << ADLAR) | (_adc_mux_schedule[(_adc_buffer->head) & _adc_schedule_mask] << MUX0);
+	ADMUX  = _adc_mux_schedule[(_adc_buffer->head) & _adc_schedule_mask];
 }
 
 void adc_disable(void){
@@ -139,7 +139,7 @@ void adc_encode_muxSchedule(uint8_t* scheduleIndices, uint8_t scheduleLen){
 	
 	// Pre-populate the left-adjust bit into the mux schedule, so you don't have to do it in the ISR
 	for(i = 0; i < scheduleLen; ++i){
-		scheduleIndices[i] = (1 << ADLAR) | (scheduleIndices[i] << MUX0);
+		scheduleIndices[i] = (1 << ADLAR) | (ADC_REFERENCE << REFS0) | (scheduleIndices[i] << MUX0);
 	}
 	
 	// Shift the mux schedule left by 1. This is done so that the ISR code can be as fast as possible.
@@ -159,6 +159,22 @@ void adc_encode_muxSchedule(uint8_t* scheduleIndices, uint8_t scheduleLen){
 void adc_reset_schedule(void){
 	_adc_buffer->head = 0;
 	_adc_buffer->tail = 0;
+}
+
+uint16_t adc_single_conversion(uint8_t muxVal){
+	uint16_t ret;
+	ADCSRA = 0;
+	ADMUX = (1<<ADLAR) | (ADC_REFERENCE << REFS0) | ((muxVal & 0xF) << MUX0);
+	ADCSRA = (1<<ADEN) | (ADC_PRESCALER << ADPS0) | (1<<ADSC) | (1<<ADIF);
+	
+	while(ADCSRA & (1<<ADSC)){
+		// Wait until the ADC is populated.
+	}
+	ret = ADC;
+	
+	ADCSRA = (1 << ADATE) | (1<<ADEN) | (1<<ADIE) | (ADC_PRESCALER << ADPS0) | (1<<ADIF);
+	
+	return ret;
 }
 
 /*
@@ -213,7 +229,7 @@ void adc_init(	uint8_t mode,
 	}*/
 	
 	for (i = 0; i < scheduleLen; ++i){
-		mask |= 1 << ((muxSchedule[i] & ~(1 << ADLAR)) >> MUX0);
+		mask |= 1 << ((muxSchedule[i] & ~((1 << ADLAR) | (ADC_REFERENCE << REFS0))) >> MUX0);
 	}
 	
 	//DIDR0 = mask & 0x1F;  // Because ADC6 and ADC7 do not have digital input buffers, you don't have to disable them.
